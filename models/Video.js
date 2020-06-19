@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const Subtitle = require('./Subtitle');
 
 const VideoSchema = new Schema({
-    vtuber: {type: Schema.ObjectId, ref: 'vtuber', required: true},
     id: { type: String, unique : true, required: true},
+    vtuberid: { type: String, required: true},
     title: { type: String, required: true },
-    publishTime: { type: String, required: true},
+    publishTime: { type: Date, required: true},
     thumbnail: { type: String, required: true },
     subtitles: [{type: Schema.ObjectId, ref: 'subtitle'}]
 });
@@ -16,13 +16,24 @@ const VideoSchema = new Schema({
 VideoSchema.pre('find', function() {
     this.populate('subtitles');
 });
-VideoSchema.pre('remove', function(next){
+VideoSchema.pre('deleteOne', { document: true, query: false }, function(){
     try {
-        Subtitle.remove({_id: { $in : this.subtitles }}).exec();
+        Subtitle.deleteMany({_id: { $in : this.subtitles }}).exec();
     } catch (err) {
-        throw Error("Something went wrong when deleting the subtitles");
+        console.log(err);
     }
-    next();
 });
+
+// TODO: Delete all subtitles for a given Vtuber when deleteMany is called
+// VideoSchema.pre('deleteMany', function(){
+//     try {
+//         const id = this.getFilter()["_id"];
+//         if (typeof projectId === "undefined") throw Error("Query id is undefined");
+//         Subtitle.deleteMany({_id: { $in : this.subtitles }}).exec();
+//     } catch (err) {
+//         console.log(err);
+//         //throw Error("Something went wrong when deleting the subtitles");
+//     }
+// });
 
 module.exports = Video = mongoose.model('video', VideoSchema);

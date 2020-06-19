@@ -11,14 +11,6 @@ app.use(express.json());
 
 // Load env variables
 require('dotenv').config();
-// Serve static assets if in production & set env vars
-// if (process.env.NODE_ENV === 'production'){
-//     app.use(express.static('client/build'));
-//     app.get('*', (req, res) => {
-//         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-//     });
-// }
-
 
 // Database connection
 const db = process.env.MONGO_URI;

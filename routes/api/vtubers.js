@@ -51,12 +51,11 @@ router.post('/:id', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
-    const vtuber = await Vtuber.findById(req.params.id);
+    const vtuber = await Vtuber.findOne({ id: req.params.id });
     if (!vtuber) throw Error('No vtuber found');
     
-    const removed = await list.remove();
-    if (!removed)
-      throw Error('Something went wrong while trying to delete that vtuber');
+    const removed = await vtuber.deleteOne();
+    if (!removed) throw Error('Something went wrong while trying to delete that vtuber');
 
     res.status(200).json({ success: true });
   } catch (e) {

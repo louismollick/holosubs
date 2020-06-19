@@ -14,13 +14,13 @@ const VtuberSchema = new Schema({
 VtuberSchema.pre('find', function() {
     this.populate('videos');
 });
-VtuberSchema.pre('remove', function(next){
+
+VtuberSchema.pre('deleteOne', { document: true, query: false }, function(){
     try {
-        Video.remove({_id: { $in : this.videos }}).exec();
+        Video.deleteMany({_id: { $in : this.videos }}).exec();
     } catch (err) {
         throw Error("Something went wrong when deleting the videos");
     }
-    next();
 });
 
 module.exports = Vtuber = mongoose.model('vtuber', VtuberSchema);
