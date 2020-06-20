@@ -23,6 +23,9 @@ mongoose.connect(db, {
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err));
 
+app.get('/', (req, res) => {
+    res.send('OK');
+});
 app.use('/api/vtubers', vtubers);
 app.use('/api/videos', videos);
 
