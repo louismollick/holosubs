@@ -26,7 +26,7 @@ module.exports = {
         });
         return videoInfo.data.items[0].snippet;
     },
-    getAllVideosForVtuber: async (channelId) => {
+    getAllSourcesInfoForVtuber: async (channelId) => {
         // "uploads" playlist's id is the channel's id except the 2nd char
         const playlistId = replaceAt(channelId, 1, "U");
         let videoList = [];
@@ -45,5 +45,24 @@ module.exports = {
             else nextPageToken = null;
         } while (nextPageToken);
         return videoList;
+    },
+    getAllSubtitlesInfoForSource: async (videoId) => {
+        let subtitleList = [];
+        let searchQuery = {};
+        let nextPageToken = null;
+        do {
+            searchQuery = await youtube.search.list({
+                "part": [ "id", "snippet" ],
+                "maxResults": 50,
+                "q": `https://www.youtube.com/watch?v=${videoId}`,
+                "safeSearch": "none",
+                "type": [ "video" ]
+              });
+            subtitleList = [...subtitleList, ...searchQuery.data.items];
+            if(searchQuery.data.nextPageToken !== null) // Get next page
+                nextPageToken = searchQuery.data.nextPageToken;
+            else nextPageToken = null;
+        } while (nextPageToken);
+        return subtitleList;
     }
 }
