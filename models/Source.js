@@ -9,11 +9,10 @@ const SourceSchema = new Schema({
     subtitles : [{ type: String, ref: 'Subtitle'}],
     title: { type: String, required: true },
     publishDate: { type: Date, required: true },
-    lastSubtitleSearch : { type: Date, required: false },
-    thumbnail: { type: String, required: true }
+    lastSubtitleSearch : { type: Date, required: false }
 });
 
 // Middleware
-SourceSchema.pre('find', function() { this.populate('vtuber'); });
+//SourceSchema.pre('find', function() { this.populate('vtuber'); });
 
 module.exports = Source = mongoose.model('Source', SourceSchema);

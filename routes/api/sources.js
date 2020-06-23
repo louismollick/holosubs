@@ -16,6 +16,7 @@ const YoutubeApi = require('../youtubeapi');
  */
 router.get('/', async (req, res) => {
 	Source.find()
+		.sort({ publishDate: -1 })
 		.then(items => res.json(items));
 });
 
@@ -26,36 +27,8 @@ router.get('/', async (req, res) => {
  */
 router.get('/vtuber/:vtuberid', async (req, res) => {
 	Source.find({ vtuber: req.params.vtuberid })
+		.sort({ publishDate: -1 })
 		.then(items => res.json(items));
-});
-
-/**
- * @route POST api/sources/vtuber/:id
- * @description Create all Sources from a specific vtuber on holoSubs
- * @access Public
- */
-router.post('/vtuber/:vtuberid', async (req, res) => {
-	try {
-		const vtuber = await Vtuber.findOne({ _id: req.params.vtuberid });
-		if (!vtuber) throw Error('That Source was not uploaded by a vtuber featured on HoloSubs.')
-		const sourceArray = await YoutubeApi.getAllSourcesInfoForVtuber(req.params.vtuberid);
-
-		for (const playlistItem of sourceArray) {
-			const { resourceId, title, publishedAt, thumbnails } = playlistItem.snippet;
-			await Source.findOneAndUpdate( // Update or create Source
-				{ _id: resourceId.videoId }, {
-					_id: resourceId.videoId,
-					title: title,
-					vtuber: vtuber._id,
-					publishDate: publishedAt,
-					thumbnail: thumbnails.default.url,
-				}, { upsert: true });
-		}
-		res.status(200).json({ success: true });
-	} catch (e) {
-		console.log(e);
-		res.status(400).json({ success: false, msg: e.message });
-	}
 });
 
 /**
@@ -79,11 +52,7 @@ router.post('/:id', async (req, res) => {
 				vtuber: sourceSnippet.channelId,
 				title: sourceSnippet.title,
 				publishDate: sourceSnippet.publishedAt,
-				thumbnail: sourceSnippet.thumbnails.default.url,
-			}, {
-				upsert: true,
-				new: true
-			}
+			}, { upsert: true, new: true }
 		);
 		if (!source) throw Error('Something went wrong saving the Source');
 
@@ -92,6 +61,34 @@ router.post('/:id', async (req, res) => {
 		res.status(400).json({
 			msg: e.message
 		});
+	}
+});
+
+/**
+ * @route POST api/sources/vtuber/:id
+ * @description Create all Sources from a specific vtuber on holoSubs
+ * @access Public
+ */
+router.post('/vtuber/:vtuberid', async (req, res) => {
+	try {
+		const vtuber = await Vtuber.findOne({ _id: req.params.vtuberid });
+		if (!vtuber) throw Error('That Source was not uploaded by a vtuber featured on HoloSubs.')
+		const sourceArray = await YoutubeApi.getAllSourcesInfoForVtuber(req.params.vtuberid);
+
+		for (const playlistItem of sourceArray) {
+			const { resourceId, title, publishedAt } = playlistItem.snippet;
+			await Source.findOneAndUpdate( // Update or create Source
+				{ _id: resourceId.videoId }, {
+					_id: resourceId.videoId,
+					title: title,
+					vtuber: vtuber._id,
+					publishDate: publishedAt,
+				}, { upsert: true });
+		}
+		return res.status(200).json({ success: true });
+	} catch (e) {
+		console.log(e);
+		return res.status(400).json({ success: false, msg: e.message });
 	}
 });
 

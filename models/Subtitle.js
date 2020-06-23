@@ -6,8 +6,7 @@ const SubtitleSchema = new Schema({
     sources: [{ type: String, ref: 'Source' }],
     uploader : { id : {type: String, required: true}, name : { type: String , required: true } },
     publishDate: { type: Date, required: true},
-    title: { type: String, required: true },
-    thumbnail: { type: String, required: true }
+    title: { type: String, required: true }
 });
 
 module.exports = Subtitle = mongoose.model('Subtitle', SubtitleSchema);
