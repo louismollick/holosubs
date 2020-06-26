@@ -14,20 +14,22 @@ const YoutubeApi = require('../youtubeapi');
  * @access Public
  */
 router.get('/', async (req, res) => {
-	Subtitle.find()
-		.sort({ publishDate: -1 })
-		.then(items => res.json(items));
-});
+	try {
+        const page = parseInt(req.query.page) || 0; //for next page pass 1 here
+        const limit = parseInt(req.query.limit) || 24;
+        const query = {};
 
-/**
- * @route GET api/subtitles/source/:id
- * @description Get all subtitles from a specific Source video
- * @access Public
- */
-router.get('/source/:sourceid', async (req, res) => {
-	Subtitle.find({ sources: req.params.sourceid })
-		.sort({ publishDate: -1 })
-		.then(items => res.json(items));
+        const doc = await Subtitle
+            .find(query)
+            .sort({publishDate: -1})
+            .skip(page * limit)
+            .limit(limit);
+        const count = await Subtitle.countDocuments(query);
+
+        return res.json({total: count, page: page, pageSize: doc.length, items: doc});
+    } catch (err) {
+        return res.json(err);
+    }
 });
 
 /**
@@ -35,10 +37,24 @@ router.get('/source/:sourceid', async (req, res) => {
  * @description Get all subtitles from a specific vtuber on holoSubs
  * @access Public
  */
-// router.get('/vtuber/:vtuberid', async (req, res) => {
-//   Subtitle.find({ vtuber: req.params.vtuberid })
-//     .then(items => res.json(items));
-// });
+router.get('/vtuber/:vtuberid', async (req, res) => {
+	try {
+        const page = parseInt(req.query.page) || 0; //for next page pass 1 here
+        const limit = parseInt(req.query.limit) || 24;
+        const query = { features: req.params.vtuberid };
+
+        const doc = await Subtitle
+            .find(query)
+            .sort({publishDate: -1})
+            .skip(page * limit)
+            .limit(limit);
+        const count = await Subtitle.countDocuments(query);
+
+        return res.json({total: count, page: page, pageSize: doc.length, items: doc});
+    } catch (err) {
+        return res.json(err);
+    }
+});
 
 /**
  * @route POST api/subtitles/:id
@@ -110,9 +126,7 @@ router.post('/source/:sourceid', async (req, res) => {
  */
 router.post('/daily', async (req, res) => {
 	try {
-		let limit;
-		if(typeof req.query.limit === "number") limit = req.query.limit;
-		else limit = 50;
+		const limit = parseInt(req.query.limit) || 50;
 		
 		const haventSearched =
 			await Source.find()
@@ -147,11 +161,10 @@ router.delete('/:id', async (req, res) => {
 		const removed = await Subtitle.findOneAndDelete({ _id: req.params.id });
 		if (!removed) throw Error('No Subtitle found.');
 		// Delete subtitle references from sources 
-		for (const source of removed.sources)
-			await Source.findOneAndUpdate({ _id: source }, { $pull: { 'subtitles': removed._id } });
-		res.status(200).json({ success: true });
+		await Source.updateMany({ features: removed._id }, { $pull: { 'subtitles': removed._id } });
+		return res.status(200).json({ success: true });
 	} catch (e) {
-		res.status(400).json({ msg: e.message, success: false });
+		return res.status(400).json({ msg: e.message, success: false });
 	}
 });
 
@@ -179,7 +192,7 @@ const searchSubtitlesForSource = async (source) => {
 			const { channelId, channelTitle, publishedAt } = clipItem.snippet;
 			await Subtitle.findOneAndUpdate( 
 				{ _id: clipItem.id.videoId }, {
-					$addToSet : { 'sources': source._id },
+					$addToSet : { 'features': source.vtuber },
 					_id: clipItem.id.videoId,
 					uploader: { id: channelId, name: channelTitle },
 					title: title,

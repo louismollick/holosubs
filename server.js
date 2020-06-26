@@ -1,5 +1,7 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
+
 
 const vtubers = require('./routes/api/vtubers');
 const sources = require('./routes/api/sources');
@@ -8,6 +10,7 @@ const subtitles = require('./routes/api/subtitles');
 // Express setup
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Load env variables
 require('dotenv').config();
