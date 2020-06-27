@@ -18,14 +18,14 @@ router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0; //for next page pass 1 here
         const limit = parseInt(req.query.limit) || 24;
-        const query = {};
-
+        const query = (typeof req.query.vtuberid === "string" && req.query.vtuberid.length > 1) 
+            ? { vtuber: req.query.vtuberid } : {};
         const doc = await Source
             .find(query)
             .sort({ publishDate: -1 })
-            .populate('vtuber')
             .skip(page * limit)
-            .limit(limit);
+            .limit(limit)
+            .populate('vtuber');
         const count = await Source.countDocuments(query);
 
         return res.json({ total: count, page: page, pageSize: doc.length, items: doc });
@@ -42,36 +42,11 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         if (!req.params.id) throw new Error("Please input an id.");
-        const subtitles = await Source
+        const source = await Source
             .find({ _id: req.params.id })
             .sort({ publishDate: -1 })
             .populate('subtitles');
-        return res.json(subtitles);
-    } catch (err) {
-        return res.json(err);
-    }
-});
-
-/**
- * @route GET api/sources/vtuber/:id
- * @description Get all Sources from a specific vtuber on holoSubs
- * @access Public
- */
-router.get('/vtuber/:vtuberid', async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 0; //for next page pass 1 here
-        const limit = parseInt(req.query.limit) || 24;
-        const query = {
-            vtuber: req.params.vtuberid
-        };
-        const doc = await Source
-            .find(query)
-            .sort({ publishDate: -1 })
-            .skip(page * limit)
-            .limit(limit);
-        const count = await Source.countDocuments(query);
-
-        return res.json({ total: count, page: page, pageSize: doc.length, items: doc });
+        return res.json(source);
     } catch (err) {
         return res.json(err);
     }

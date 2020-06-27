@@ -12,7 +12,4 @@ const SourceSchema = new Schema({
     lastSubtitleSearch : { type: Date, required: false }
 });
 
-// Middleware
-//SourceSchema.pre('find', function() { this.populate('vtuber'); });
-
 module.exports = Source = mongoose.model('Source', SourceSchema);
