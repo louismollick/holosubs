@@ -1,0 +1,157 @@
+$grid-columns: 20;
+$grid-gutter-width: 30px;
+$primary: rgb(255, 255, 255);
+$body-bg: rgb(24, 24, 24);
+$dark: rgb(33, 33, 33);
+$holo-accent: rgb(147, 223, 235);
+$holo-primary: rgb(122, 193, 240);
+
+.App {
+  color: rgb(255, 255, 255);
+}
+
+.vtuberScrollbar button{
+  outline: none;
+  margin: 0 5px;
+  color: grey;
+  padding: 0;
+  width: 75px;
+  height: 75px;
+  border-radius: 100%;
+  background-color: $body-bg;
+  background-position: center;
+}
+
+.vtuberScrollbar button:focus{
+  outline: none;
+}
+
+.vtuberSelected{
+  border: 3px solid $holo-primary;
+}
+.vtuberNotSelected{
+  border: 3px solid darkgrey;
+}
+
+.videoCard {
+  margin-bottom: 1rem;
+  -webkit-animation: fadein 0.7s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 0.7s; /* Firefox < 16 */
+  -ms-animation: fadein 0.7s; /* Internet Explorer */
+  -o-animation: fadein 0.7s; /* Opera < 12.1 */
+  animation: fadein 0.7s;
+}
+
+.videoCard div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.videoCard a:hover {
+  text-decoration: none;
+}
+
+.videoCardThumbnail{
+  position: relative;
+}
+
+.videoCardThumbnail div{
+  position: absolute;
+  width: 35%;
+  height: 100%;
+  background-color: rgba(33, 33, 33, 0.5);
+  right: 0px;
+  top: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.videoCardThumbnail p{
+  text-align: center;
+}
+
+.videoCardThumbnail span{
+  display: block;
+  font-size: 2rem;
+}
+
+
+.typeToggle {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.typeToggle a {
+  color: $holo-primary;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-size: 17px;
+  border-bottom: 3px solid transparent;
+  transition: color 0.5s, border-bottom 0.3s;
+}
+
+.typeToggle a:hover {
+  color: $holo-accent;
+  border-bottom: 3px solid $holo-accent;
+  transition: color 0.5s, border-bottom 0.3s;
+}
+
+.typeToggle a.active {
+  border-bottom: 3px solid;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@import "~bootstrap/scss/bootstrap";

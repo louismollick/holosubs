@@ -18,14 +18,13 @@ router.get('/', async (req, res) => {
 		const page = parseInt(req.query.page) || 0; //for next page pass 1 here
 		const limit = parseInt(req.query.limit) || 24;
 		const query = (typeof req.query.vtuberid === "string" && req.query.vtuberid.length > 1) 
-			? { features: req.query.vtuberid } : {};
-		console.log("QUERY", query);
+			? { featuring: req.query.vtuberid } : {};
 		const doc = await Subtitle
 			.find(query)
 			.sort({ publishDate: -1 })
 			.skip(page * limit)
 			.limit(limit)
-			.populate('features');
+			.populate('featuring');
 		const count = await Subtitle.countDocuments(query);
 
 		return res.json({ total: count, page: page, pageSize: doc.length, items: doc });
@@ -46,7 +45,7 @@ router.get('/:id', async (req, res) => {
 			.find({ _id: req.params.id })
 			.sort({ publishDate: -1 })
 			.populate('sources')
-			.populate('features');
+			.populate('featuring');
 		return res.json(subtitle);
 	} catch (err) {
 		return res.json(err);
@@ -144,7 +143,7 @@ const searchSubtitlesForSource = async (source) => {
 			const { channelId, channelTitle, publishedAt } = clipItem.snippet;
 			await Subtitle.findOneAndUpdate(
 				{ _id: clipItem.id.videoId }, {
-				$addToSet: { 'features': source.vtuber, 'sources': source._id },
+				$addToSet: { 'featuring': source.vtuber, 'sources': source._id },
 				_id: clipItem.id.videoId,
 				uploader: { id: channelId, name: channelTitle },
 				title: title,
