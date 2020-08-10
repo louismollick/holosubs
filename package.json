@@ -1,25 +1,27 @@
 {
-  "name": "holoclips",
+  "name": "holosubs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hololive subtitle aggregator",
   "scripts": {
-    "start": "node server.js",
-    "server": "nodemon server.js"
+    "preinstall": "npm i --prefix client && npm i --prefix server",
+    "server": "NODE_ENV=development npm run server --prefix server",
+    "client": "npm start --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ruiisuuu/holosubs.git"
   },
   "keywords": [
     "hololive"
   ],
   "author": "Louis Mollick",
   "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "googleapis": "^52.1.0",
-    "mongoose": "^5.9.19"
+  "bugs": {
+    "url": "https://github.com/Ruiisuuu/holosubs/issues"
   },
+  "homepage": "https://github.com/Ruiisuuu/holosubs#readme",
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "concurrently": "^5.2.0"
   }
 }
