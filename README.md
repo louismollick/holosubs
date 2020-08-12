@@ -2,7 +2,7 @@
 
 https://holosubs.netlify.app/
 
-This is a proof of concept for a feature suggestion I have for [HoloTools](https://hololive.jetri.co/#/).  
+This is a proof of concept for a feature suggestion for [HoloTools](https://hololive.jetri.co/#/).  
 Actually, I was planning to finish this project and manage it myself. However, the free-tier Youtube API Quota limit put some limits on how many queries I could do in an automatic manner. Additionally, the recent video purge has made many videos unaccessable via the Youtube API (because they're deleted or privated). This makes it hard for me to find the translated clips corresponding to the purged videos.  
 But! Holotools seems to have saved (?) all the video ids from the deleted videos as well! And new videos seem to already be added to its database!
 This is only a suggestion, the rest is up to you!
