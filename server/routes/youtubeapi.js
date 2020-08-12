@@ -32,7 +32,7 @@ module.exports = {
         let videoList = [];
         let playListQuery = {};
         let nextPageToken = null;
-        do {
+        //do { COMMENTED OUT FOR PROOF OF CONCEPT PURPOSES
             playListQuery = await youtube.playlistItems.list({
                 "part": [ "id", "snippet" ],
                 "maxResults": 50,
@@ -43,7 +43,7 @@ module.exports = {
             if(playListQuery.data.nextPageToken !== null) // Get next page
                 nextPageToken = playListQuery.data.nextPageToken;
             else nextPageToken = null;
-        } while (nextPageToken);
+        //} while (nextPageToken);
         return videoList;
     },
     getAllSubtitlesInfoForSource: async (videoId) => {
