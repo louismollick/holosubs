@@ -55,17 +55,18 @@ $holo-primary: rgb(122, 193, 240);
 }
 
 .videoCardThumbnail{
+  display: block;
   position: relative;
 }
 
-.videoCardThumbnail div{
+.videoCardBox{
   position: absolute;
   width: 35%;
   height: 100%;
   background-color: rgba(33, 33, 33, 0.5);
   right: 0px;
   top: 0px;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -79,7 +80,6 @@ $holo-primary: rgb(122, 193, 240);
   display: block;
   font-size: 2rem;
 }
-
 
 .typeToggle {
   margin-top: 1.5rem;
